@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root7769
+      POSTGRES_DB: hospitaldb
+    ports:
+      - "5433:5432"
+
+  app:
+    image: hospital-managament
+    build:
+      context: .
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hospitaldb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root7769
+    depends_on:
+      - postgres
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins_new
+    ports:
+      - "8084:8080"   # Измените 8083 на 8084 или другой свободный порт
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+volumes:
+  jenkins_home:
